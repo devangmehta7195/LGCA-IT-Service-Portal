@@ -1,0 +1,27 @@
+{
+  "name": "lgca-it-ticket-api",
+  "version": "1.0.0",
+  "description": "Backend API for LG Electronics Canada Inc. IT Service Request Portal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "microservices",
+    "aws",
+    "ecs",
+    "fargate"
+  ],
+  "author": "LGCA IT Service Portal Capstone",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

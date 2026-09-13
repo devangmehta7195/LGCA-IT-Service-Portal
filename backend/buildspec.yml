@@ -1,0 +1,37 @@
+version: 0.2
+
+env:
+  variables:
+    DOCKER_USERNAME: "devangmehta7195"
+    IMAGE_REPOSITORY: "devangmehta7195/lgca-it-backend"
+  secrets-manager:
+    DOCKER_PASSWORD: "LGCA/DockerHub:password"
+
+phases:
+  pre_build:
+    commands:
+      - echo "Logging in to Docker Hub..."
+      - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+      - COMMIT_HASH=$(echo "$CODEBUILD_RESOLVED_SOURCE_VERSION" | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH}
+      - IMAGE_URI=${IMAGE_REPOSITORY}:${IMAGE_TAG}
+      - echo "Backend image: ${IMAGE_URI}"
+
+  build:
+    commands:
+      - echo "Building LGCA backend Docker image..."
+      - cd backend
+      - docker build -t "${IMAGE_URI}" .
+      - cd ..
+      - echo "Backend Docker build completed."
+
+  post_build:
+    commands:
+      - echo "Pushing backend image to Docker Hub..."
+      - docker push "${IMAGE_URI}"
+      - printf '[{"name":"lgca-it-backend","imageUri":"%s"}]' "${IMAGE_URI}" > imagedefinitions.json
+      - cat imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
