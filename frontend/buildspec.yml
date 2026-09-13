@@ -11,30 +11,30 @@ env:
 phases:
   pre_build:
     commands:
-      - echo "Preparing frontend build..."
-      - echo "Backend API endpoint: ${BACKEND_ALB_URL}"
-      - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-      - COMMIT_HASH=$(echo "$CODEBUILD_RESOLVED_SOURCE_VERSION" | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH}
-      - IMAGE_URI=${IMAGE_REPOSITORY}:${IMAGE_TAG}
-      - echo "Frontend image: ${IMAGE_URI}"
+      - 'echo "Preparing frontend build..."'
+      - 'echo "Backend API endpoint: ${BACKEND_ALB_URL}"'
+      - 'echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin'
+      - 'COMMIT_HASH=$(echo "$CODEBUILD_RESOLVED_SOURCE_VERSION" | cut -c 1-7)'
+      - 'IMAGE_TAG=${COMMIT_HASH}'
+      - 'IMAGE_URI=${IMAGE_REPOSITORY}:${IMAGE_TAG}'
+      - 'echo "Frontend image: ${IMAGE_URI}"'
 
   build:
     commands:
-      - echo "Creating frontend environment configuration..."
-      - printf 'VITE_API_BASE_URL=%s\n' "${BACKEND_ALB_URL}" > frontend/.env
-      - echo "Building LGCA frontend Docker image..."
-      - cd frontend
-      - docker build -t "${IMAGE_URI}" .
-      - cd ..
-      - echo "Frontend Docker build completed."
+      - 'echo "Creating frontend environment configuration..."'
+      - 'printf ''VITE_API_BASE_URL=%s\n'' "${BACKEND_ALB_URL}" > frontend/.env'
+      - 'echo "Building LGCA frontend Docker image..."'
+      - 'cd frontend'
+      - 'docker build -t "${IMAGE_URI}" .'
+      - 'cd ..'
+      - 'echo "Frontend Docker build completed."'
 
   post_build:
     commands:
-      - echo "Pushing frontend image to Docker Hub..."
-      - docker push "${IMAGE_URI}"
-      - printf '[{"name":"lgca-it-frontend","imageUri":"%s"}]' "${IMAGE_URI}" > imagedefinitions.json
-      - cat imagedefinitions.json
+      - 'echo "Pushing frontend image to Docker Hub..."'
+      - 'docker push "${IMAGE_URI}"'
+      - 'printf ''[{"name":"lgca-it-frontend","imageUri":"%s"}]'' "${IMAGE_URI}" > imagedefinitions.json'
+      - 'cat imagedefinitions.json'
 
 artifacts:
   files:
